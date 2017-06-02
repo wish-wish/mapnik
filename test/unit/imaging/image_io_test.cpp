@@ -18,6 +18,9 @@
 #include <boost/filesystem/convenience.hpp>
 #pragma GCC diagnostic pop
 
+#include <fstream>
+#include <streambuf>
+
 inline void make_directory(std::string const& dir) {
     boost::filesystem::create_directories(dir);
 }
@@ -232,5 +235,23 @@ SECTION("Quantising small (less than 3 pixel images preserve original colours")
     }
 #endif
 } // END SECTION
+
+SECTION("Test image type from binary detection - webp extended")
+{
+    std::string filename = "./test/data/webp/extended.webp";
+    std::ifstream file(filename.c_str(), std::ios::binary);
+    std::string file_str((std::istreambuf_iterator<char>(file)),
+                         std::istreambuf_iterator<char>());
+    REQUIRE_NOTHROW(mapnik::get_image_reader(file_str.c_str(), file_str.size()));
+}
+
+SECTION("Test image type from binary detection - webp lossless")
+{
+    std::string filename = "./test/data/webp/lossless.webp";
+    std::ifstream file(filename.c_str(), std::ios::binary);
+    std::string file_str((std::istreambuf_iterator<char>(file)),
+                         std::istreambuf_iterator<char>());
+    REQUIRE_NOTHROW(mapnik::get_image_reader(file_str.c_str(), file_str.size()));
+}
 
 } // END TEST_CASE
